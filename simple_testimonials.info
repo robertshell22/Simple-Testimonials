@@ -1,1 +1,17 @@
 name = Simple Testimonials
+description = "Adds a testimonial content type, a testimonials list page and blocks."
+core = 7.x
+package = Other
+
+dependencies[] = image
+dependencies[] = views
+dependencies[] = flexslider
+dependencies[] = features
+dependencies[] = vvf
+dependencies[] = imagecache_actions
+
+files[] = simple_testimonials.admin.inc
+files[] = simple_testimonials.install
+files[] = simple_testimonials.module
+configure = admin/config/content/simple_testimonials/general
+
