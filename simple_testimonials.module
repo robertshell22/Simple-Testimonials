@@ -59,8 +59,10 @@ function simple_testimonials_menu() {
   $testimonials_path = variable_get('testimonials_path', 'testimonials');
 
   $items[$testimonials_path] = array(
-      'title' => 'Testimonials',
-      'page callback' => 'simple_testimonials_page',
+      'title' => variable_get('testimonials_title', 'Testimonials'),
+      'description' => variable_get('testimonials_description', ''),
+      'page callback' => 'views_embed_view',
+      'page arguments' => array('testimonials', 'testimonials_page', 1),
       'access callback' => 'user_access',
       'access arguments' => array('access content'),
       'weight' => 1,
@@ -70,19 +72,19 @@ function simple_testimonials_menu() {
   $items['admin/config/content/simple_testimonials'] = array(
       'title' => 'Testimonials',
       'description' => 'Allows the user to configure the layout of testimonials on the testimonials page.',
-      'file' => 'testimonials.admin.inc',
+      'file' => 'simple_testimonials.admin.inc',
       'page callback' => 'simple_testimonials_settings_page',
       'access callback' => 'user_access',
-      'access arguments' => array('administer faq'),
+      'access arguments' => array('administer testimonials'),
   );
   $items['admin/config/content/simple_testimonials/general'] = array(
       'title' => 'General',
       'description' => 'Allows the user to configure the header and descriptive text for the testimonials page.',
-      'file' => 'testimonials.admin.inc',
+      'file' => 'simple_testimonials.admin.inc',
       'page callback' => 'drupal_get_form',
       'page arguments' => array('simple_testimonials_general_settings_form'),
       'access callback' => 'user_access',
-      'access arguments' => array('administer faq'),
+      'access arguments' => array('administer testimonials'),
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => -10,
   );

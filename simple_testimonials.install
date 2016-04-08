@@ -63,6 +63,7 @@ function simple_testimonials_uninstall() {
     variable_del('testimonials_title');
     variable_del('testimonials_description');
     variable_del('testimonials_path');
+    variable_del('testimonials_custom_breadcrumb');
     variable_del('testimonials_testimonial_testimonial_image_fid');
   
   // Remove content type and the fields created.

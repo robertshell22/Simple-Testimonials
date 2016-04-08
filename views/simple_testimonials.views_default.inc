@@ -40,7 +40,6 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = 'There are currently no testimonials.';
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Field: Content: Testimonial image */
   $handler->display->display_options['fields']['field_testimonial_image']['id'] = 'field_testimonial_image';
@@ -294,10 +293,17 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['header']['area_text_custom']['id'] = 'area_text_custom';
   $handler->display->display_options['header']['area_text_custom']['table'] = 'views';
   $handler->display->display_options['header']['area_text_custom']['field'] = 'area_text_custom';
-  $handler->display->display_options['header']['area_text_custom']['content'] = '<h1>[variable]</h1>
-<h2>[variable_1]</h2>
+  $handler->display->display_options['header']['area_text_custom']['content'] = '<h2>[variable_1]</h2>
 <hr>';
   $handler->display->display_options['header']['area_text_custom']['tokenize'] = TRUE;
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = 'There are currently no testimonials.';
+  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: Content: Testimonial image */
   $handler->display->display_options['fields']['field_testimonial_image']['id'] = 'field_testimonial_image';
@@ -350,14 +356,6 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['fields']['field_testimonial_author_company']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_testimonial_author_company']['type'] = 'text_plain';
   /* Field: Global: System variable */
-  $handler->display->display_options['fields']['variable']['id'] = 'variable';
-  $handler->display->display_options['fields']['variable']['table'] = 'views';
-  $handler->display->display_options['fields']['variable']['field'] = 'variable';
-  $handler->display->display_options['fields']['variable']['label'] = '';
-  $handler->display->display_options['fields']['variable']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['variable']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['variable']['variable_name'] = 'testimonials_title';
-  /* Field: Global: System variable */
   $handler->display->display_options['fields']['variable_1']['id'] = 'variable_1';
   $handler->display->display_options['fields']['variable_1']['table'] = 'views';
   $handler->display->display_options['fields']['variable_1']['field'] = 'variable';
@@ -373,7 +371,7 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['fields']['variable_2']['exclude'] = TRUE;
   $handler->display->display_options['fields']['variable_2']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['variable_2']['variable_name'] = 'testimonials_path';
-  $handler->display->display_options['path'] = 'testimonials';
+  $handler->display->display_options['path'] = 'testimonial';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Testimonials';
   $handler->display->display_options['menu']['weight'] = '0';

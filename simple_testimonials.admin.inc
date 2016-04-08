@@ -34,13 +34,14 @@ function simple_testimonials_general_settings_form($form) {
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#default_value' => variable_get('testimonials_title', 'Testimonials'),
+    '#description' => t('Testimonials, Recommendations, What People Are Saying, etc...'),
   );
 
   $form['body_filter']['testimonials_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Testimonials Description'),
-    '#default_value' => variable_get('testimonials_description', 'Check out what people have been saying.'),
-    '#description' => t('Your testimonials description.  This will be placed at the top of the page, above the testimonials and can serve as an introductory text.'),
+    '#default_value' => variable_get('testimonials_description', ''),
+    '#description' => t('Text that will be placed at the top of the page, above the testimonials and can serve as an introductory text.'),
     '#rows' => 5,
     '#format' => variable_get('testimonials_description_format', NULL),
   );
