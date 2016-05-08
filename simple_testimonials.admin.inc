@@ -30,7 +30,7 @@ function simple_testimonials_settings_page($op = NULL) {
  *   converted to HTML.
  */
 function simple_testimonials_general_settings_form($form) {
-  
+
   $form['testimonials_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
@@ -51,7 +51,7 @@ function simple_testimonials_general_settings_form($form) {
     '#type' => 'hidden',
     '#value' => variable_get('testimonials_path', 'testimonials'),
   );
-  
+
   $form['testimonials_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Testimonials Path'),
@@ -82,23 +82,23 @@ function simple_testimonials_general_settings_form_validate($form, &$form_state)
  */
 function simple_testimonials_general_settings_form_submit($form, &$form_state) {
 
-$oldpath = variable_get('testimonials_path_old', 'testimonials');
-$newpath = variable_get('testimonials_path', 'testimonials');
+  $oldpath = variable_get('testimonials_path_old', 'testimonials');
+  $newpath = variable_get('testimonials_path', 'testimonials');
 
-$redirect = new stdClass();
-        redirect_object_prepare(
-          $redirect,
-          array(
-            'source' => $oldpath,
-            'source_options' => array(),
-            'redirect' => $newpath,
-            'redirect_options' => array(),
-            'language' => LANGUAGE_NONE,
-          )
-        );
-        redirect_save($redirect);
-        variable_set('testimonials_path_old', $newpath);
-        menu_rebuild();
+  $redirect = new stdClass();
+  redirect_object_prepare(
+    $redirect,
+    array(
+      'source' => $oldpath,
+      'source_options' => array(),
+      'redirect' => $newpath,
+      'redirect_options' => array(),
+      'language' => LANGUAGE_NONE,
+    )
+  );
+  redirect_save($redirect);
+  variable_set('testimonials_path_old', $newpath);
+  menu_rebuild();
 }
 
 

@@ -10,11 +10,11 @@ CONTENTS
 INTRODUCTION
 ------------
 
-This modules a testimonial content type, a testimonials list page, a
-random testimonial block, and a slider block that rotates five testimonials.
+This modules creates a testimonial content type, a testimonials list page, a
+random testimonial block, and a slider block that rotates through five testimonials.
 
 The display name, page description, and url alias of the testimonials section and block titles
-is configurable in a settings page.
+are configurable in a settings page.
 
 Maintainer: Robert Shell (http://www.drupal.org/user/2777399)
 

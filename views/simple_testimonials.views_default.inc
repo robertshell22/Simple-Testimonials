@@ -156,7 +156,7 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['fields']['variable_1']['label'] = '';
   $handler->display->display_options['fields']['variable_1']['exclude'] = TRUE;
   $handler->display->display_options['fields']['variable_1']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['variable_1']['empty'] = 'Read what customers are saying about us.';
+  $handler->display->display_options['fields']['variable_1']['empty'] = 'See what customers are saying about us.';
   $handler->display->display_options['fields']['variable_1']['variable_name'] = 'testimonials_description';
   /* Field: Global: System variable */
   $handler->display->display_options['fields']['variable_2']['id'] = 'variable_2';

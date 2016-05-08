@@ -11,61 +11,60 @@
  * Inserts the Testimonials module's schema in the SQL database.
  */
 function simple_testimonials_install() {
-  
+
   variable_set('node_type_testimonial', array('status'));
   $t = get_t();
 
 // Make sure a testimonial content type doesn't already exist
   if (!in_array('testimonial', node_type_get_names())) {
     $type = array(
-        'type' => 'testimonial',
-        'name' => st('Testimonial'),
-        'base' => 'node_content',
-        'description' => st("Testimonial content with author information and photo."),
-        'custom' => 1,
-        'modified' => 1,
-        'locked' => 0,
-        'title_label' => 'Headline'
+      'type' => 'testimonial',
+      'name' => st('Testimonial'),
+      'base' => 'node_content',
+      'description' => st("Testimonial content with author information and photo."),
+      'custom' => 1,
+      'modified' => 1,
+      'locked' => 0,
+      'title_label' => 'Headline'
     );
 
     $type = node_type_set_defaults($type);
     node_type_save($type);
 
   }
-  
+
 
   _simple_testimonials_add_custom_fields();
 
-    // Create the testimonial.testimonial_image field's default file reference.
-    $filename = 'testimonial-testimonial-image-default.jpg';
-    $origfile = drupal_get_path('module', 'simple_testimonials') . '/images/' . $filename;
-    $uri = 'public://' . $filename;
-    $file = (object) array(
-        'uid' => 1,
-        'filename' => $filename,
-        'uri' => $origfile,
-        'filemime' => 'image/jpg',
-        'filesize' => filesize($origfile),
-        'status' => FILE_STATUS_PERMANENT,
-    );
-    $file = file_copy($file, $uri, FILE_EXISTS_REPLACE);
-    variable_set('testimonials_testimonial_testimonial_image_fid', $file->fid);
+  // Create the testimonial.testimonial_image field's default file reference.
+  $filename = 'testimonial-testimonial-image-default.jpg';
+  $origfile = drupal_get_path('module', 'simple_testimonials') . '/images/' . $filename;
+  $uri = 'public://' . $filename;
+  $file = (object) array(
+    'uid' => 1,
+    'filename' => $filename,
+    'uri' => $origfile,
+    'filemime' => 'image/jpg',
+    'filesize' => filesize($origfile),
+    'status' => FILE_STATUS_PERMANENT,
+  );
+  $file = file_copy($file, $uri, FILE_EXISTS_REPLACE);
+  variable_set('testimonials_testimonial_testimonial_image_fid', $file->fid);
 
-    variable_set('testimonials_path_old', 'testimonials');
-    variable_set('testimonials_title', 'Testimonials');
+  variable_set('testimonials_path_old', 'testimonials');
+  variable_set('testimonials_title', 'Testimonials');
 
-    db_update('system')
+  db_update('system')
     ->fields(array('weight' => 999))
     ->condition('name', 'simple_testimonials', '=')
     ->execute();
-    
-    $module = 'simple_testimonials';
-    $update = 'UPDATE system SET schema_version = 7000 WHERE name = :module';
-    db_query($update, array(':module' => $module));
 
-    simple_testimonials_update_7005();
+  $module = 'simple_testimonials';
+  $update = 'UPDATE system SET schema_version = 7000 WHERE name = :module';
+  db_query($update, array(':module' => $module));
+
+  simple_testimonials_update_7005();
 }
-
 
 
 /**
@@ -75,14 +74,14 @@ function simple_testimonials_install() {
  */
 function simple_testimonials_uninstall() {
 
-    // Delete the variables we created.
-    // General settings.
-    variable_del('testimonials_title');
-    variable_del('testimonials_description');
-    variable_del('testimonials_path');
-    variable_del('testimonials_path_old');
-    variable_del('testimonials_testimonial_testimonial_image_fid');
-  
+  // Delete the variables we created.
+  // General settings.
+  variable_del('testimonials_title');
+  variable_del('testimonials_description');
+  variable_del('testimonials_path');
+  variable_del('testimonials_path_old');
+  variable_del('testimonials_testimonial_testimonial_image_fid');
+
   // Remove content type and the fields created.
   $testimonial_type = 'testimonial';
   $sql = 'SELECT nid FROM {node} n WHERE n.type = :type';
@@ -165,114 +164,114 @@ function _simple_testimonials_installed_fields() {
         ),
       ),
     ),
-      'testimonial_author_role' => array(
-          'translatable' => '0',
-          'entity_types' => array(),
-          'settings' => array(
-              'max_length' => 255,
-          ),
-          'foreign keys' => array(
-              'format' => array(
-                  'columns' => array(
-                      'format' => 'format',
-                  ),
-                  'table' => 'filter_format',
-              ),
-          ),
-          'indexes' => array(
-              'format' => array(
-                  0 => 'format',
-              ),
-          ),
-          'field_name' => 'field_testimonial_author_role',
-          'type' => 'text',
-          'module' => 'text',
-          'active' => '1',
-          'locked' => '0',
-          'cardinality' => '1',
-          'deleted' => '0',
-          'bundles' => array(
-              'node' => array(
-                  'page',
-              ),
-          ),
+    'testimonial_author_role' => array(
+      'translatable' => '0',
+      'entity_types' => array(),
+      'settings' => array(
+        'max_length' => 255,
       ),
-      'testimonial_author_company' => array(
-          'translatable' => '0',
-          'entity_types' => array(),
-          'settings' => array(
-              'max_length' => 255,
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
           ),
-          'foreign keys' => array(
-              'format' => array(
-                  'columns' => array(
-                      'format' => 'format',
-                  ),
-                  'table' => 'filter_format',
-              ),
-          ),
-          'indexes' => array(
-              'format' => array(
-                  0 => 'format',
-              ),
-          ),
-          'field_name' => 'field_testimonial_author_company',
-          'type' => 'text',
-          'module' => 'text',
-          'active' => '1',
-          'locked' => '0',
-          'cardinality' => '1',
-          'deleted' => '0',
-          'bundles' => array(
-              'node' => array(
-                  'page',
-              ),
-          ),
+          'table' => 'filter_format',
+        ),
       ),
-      'testimonial_text' => array(
-          'translatable' => '0',
-          'entity_types' => array(),
-          'settings' => array(
-              'max_length' => 800,
-          ),
-          'foreign keys' => array(
-              'format' => array(
-                  'columns' => array(
-                      'format' => 'format',
-                  ),
-                  'table' => 'filter_format',
-              ),
-          ),
-          'indexes' => array(
-              'format' => array(
-                  0 => 'format',
-              ),
-          ),
-          'field_name' => 'field_testimonial_text',
-          'type' => 'text_long',
-          'module' => 'text',
-          'active' => '1',
-          'locked' => '0',
-          'cardinality' => '1',
-          'deleted' => '0',
-          'bundles' => array(
-              'node' => array(
-                  'page',
-              ),
-          ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
       ),
+      'field_name' => 'field_testimonial_author_role',
+      'type' => 'text',
+      'module' => 'text',
+      'active' => '1',
+      'locked' => '0',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'bundles' => array(
+        'node' => array(
+          'page',
+        ),
+      ),
+    ),
+    'testimonial_author_company' => array(
+      'translatable' => '0',
+      'entity_types' => array(),
+      'settings' => array(
+        'max_length' => 255,
+      ),
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'field_name' => 'field_testimonial_author_company',
+      'type' => 'text',
+      'module' => 'text',
+      'active' => '1',
+      'locked' => '0',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'bundles' => array(
+        'node' => array(
+          'page',
+        ),
+      ),
+    ),
+    'testimonial_text' => array(
+      'translatable' => '0',
+      'entity_types' => array(),
+      'settings' => array(
+        'max_length' => 800,
+      ),
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'field_name' => 'field_testimonial_text',
+      'type' => 'text_long',
+      'module' => 'text',
+      'active' => '1',
+      'locked' => '0',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'bundles' => array(
+        'node' => array(
+          'page',
+        ),
+      ),
+    ),
     'testimonial_image' => array(
-    'translatable' => '0',
+      'translatable' => '0',
       'entity_types' => array(),
       'settings' => array(
         'default_image' => 0,
         'uri_scheme' => 'public',
       ),
       'foreign keys' => array(
-      'fid' => array(
-        'columns' => array(
-          'fid' => 'fid',
-        ),
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
           'table' => 'file_managed',
         ),
       ),
@@ -355,173 +354,173 @@ function _simple_testimonials_installed_instances() {
       'bundle' => 'page',
       'deleted' => '0',
     ),
-      'testimonial_author_role' => array(
-          'label' => 'Author Role',
-          'widget' => array(
-              'weight' => '-2',
-              'type' => 'text_textfield',
-              'module' => 'text',
-              'active' => 1,
-              'settings' => array(
-                  'size' => '60',
-              ),
-          ),
-          'settings' => array(
-              'text_processing' => '0',
-              'user_register_form' => FALSE,
-          ),
-          'display' => array(
-              'default' => array(
-                  'label' => 'hidden',
-                  'type' => 'text_default',
-                  'weight' => '3',
-                  'settings' => array(),
-                  'module' => 'text',
-              ),
-              'teaser' => array(
-                  'label' => 'hidden',
-                  'type' => 'text_default',
-                  'weight' => '3',
-                  'settings' => array(),
-                  'module' => 'text',
-              ),
-          ),
-          'required' => 0,
-          'description' => '(Customer, Project Manager, etc...)',
-          'default_value' => NULL,
-          'field_name' => 'field_testimonial_author_role',
-          'entity_type' => 'node',
-          'bundle' => 'page',
-          'deleted' => '0',
+    'testimonial_author_role' => array(
+      'label' => 'Author Role',
+      'widget' => array(
+        'weight' => '-2',
+        'type' => 'text_textfield',
+        'module' => 'text',
+        'active' => 1,
+        'settings' => array(
+          'size' => '60',
+        ),
       ),
-      'testimonial_author_company' => array(
-          'label' => 'Company/ Location',
-          'widget' => array(
-              'weight' => '-1',
-              'type' => 'text_textfield',
-              'module' => 'text',
-              'active' => 1,
-              'settings' => array(
-                  'size' => '60',
-              ),
-          ),
-          'settings' => array(
-              'text_processing' => '0',
-              'user_register_form' => FALSE,
-          ),
-          'display' => array(
-              'default' => array(
-                  'label' => 'hidden',
-                  'type' => 'text_default',
-                  'weight' => '4',
-                  'settings' => array(),
-                  'module' => 'text',
-              ),
-              'teaser' => array(
-                  'label' => 'hidden',
-                  'type' => 'text_default',
-                  'weight' => '4',
-                  'settings' => array(),
-                  'module' => 'text',
-              ),
-          ),
-          'required' => 0,
-          'description' => '(Google, Chicago, IL, etc...)',
-          'default_value' => NULL,
-          'field_name' => 'field_testimonial_author_company',
-          'entity_type' => 'node',
-          'bundle' => 'page',
-          'deleted' => '0',
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
       ),
-      'testimonial_text' => array(
-          'label' => 'Testimonial',
-          'settings' => array(
-              'text_processing' => 0,
-              'user_register_form' => FALSE,
-          ),
-          'widget' => array(
-              'active' => 1,
-              'module' => 'text',
-              'settings' => array(
-                  'rows' => 3,
-              ),
-              'type' => 'text_textarea',
-              'weight' => 0,
-          ),
-          'display' => array(
-              'default' => array(
-                  'label' => 'hidden',
-                  'module' => 'text',
-                  'settings' => array(),
-                  'type' => 'text_default',
-                  'weight' => 1,
-              ),
-              'teaser' => array(
-                  'label' => 'hidden',
-                  'settings' => array(),
-                  'type' => 'hidden',
-                  'weight' => 1,
-              ),
-          ),
-          'required' => 1,
-          'description' => 'Enter a testimonial, up to 800 characters in length. Do not include quotation marks.',
-          'default_value' => NULL,
-          'field_name' => 'field_testimonial_text',
-          'entity_type' => 'node',
-          'bundle' => 'page',
-          'deleted' => '0',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'type' => 'text_default',
+          'weight' => '3',
+          'settings' => array(),
+          'module' => 'text',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'type' => 'text_default',
+          'weight' => '3',
+          'settings' => array(),
+          'module' => 'text',
+        ),
       ),
+      'required' => 0,
+      'description' => '(Customer, Project Manager, etc...)',
+      'default_value' => NULL,
+      'field_name' => 'field_testimonial_author_role',
+      'entity_type' => 'node',
+      'bundle' => 'page',
+      'deleted' => '0',
+    ),
+    'testimonial_author_company' => array(
+      'label' => 'Company/ Location',
+      'widget' => array(
+        'weight' => '-1',
+        'type' => 'text_textfield',
+        'module' => 'text',
+        'active' => 1,
+        'settings' => array(
+          'size' => '60',
+        ),
+      ),
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'type' => 'text_default',
+          'weight' => '4',
+          'settings' => array(),
+          'module' => 'text',
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'type' => 'text_default',
+          'weight' => '4',
+          'settings' => array(),
+          'module' => 'text',
+        ),
+      ),
+      'required' => 0,
+      'description' => '(Google, Chicago, IL, etc...)',
+      'default_value' => NULL,
+      'field_name' => 'field_testimonial_author_company',
+      'entity_type' => 'node',
+      'bundle' => 'page',
+      'deleted' => '0',
+    ),
+    'testimonial_text' => array(
+      'label' => 'Testimonial',
+      'settings' => array(
+        'text_processing' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'rows' => 3,
+        ),
+        'type' => 'text_textarea',
+        'weight' => 0,
+      ),
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 1,
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 1,
+        ),
+      ),
+      'required' => 1,
+      'description' => 'Enter a testimonial, up to 800 characters in length. Do not include quotation marks.',
+      'default_value' => NULL,
+      'field_name' => 'field_testimonial_text',
+      'entity_type' => 'node',
+      'bundle' => 'page',
+      'deleted' => '0',
+    ),
     'testimonial_image' => array(
       'bundle' => 'image',
-    'deleted' => 0,
-    'description' => 'Upload an image of the testimonial author.',
-    'display' => array(
-       'default' => array(
-                'label' => 'hidden',
-                'module' => 'image',
-                'settings' => array(
-                    'image_link' => '',
-                    'image_style' => 'testimonial_medium',
-                ),
-                'type' => 'image',
-                'weight' => 0,
-            ),
-            'teaser' => array(
-                'label' => 'hidden',
-                'module' => 'image',
-                'settings' => array(
-                    'image_link' => 'content',
-                    'image_style' => 'testimonial_small',
-                ),
-                'type' => 'image',
-                'weight' => 0,
-            ),
-     ),
-    'entity_type' => 'node',
-    'field_name' => 'field_testimonial_image',
-    'label' => 'Testimonial image',
-    'required' => 0,
-    'settings' => array(
-      'alt_field' => 0,
-      'default_image' => 0,
-      'file_directory' => 'images/testimonials',
-      'file_extensions' => 'png gif jpg jpeg',
-      'max_filesize' => '10MB',
-      'max_resolution' => '',
-      'min_resolution' => '',
-      'title_field' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'image',
-      'settings' => array(
-        'preview_image_style' => 'thumbnail',
-        'progress_indicator' => 'bar',
+      'deleted' => 0,
+      'description' => 'Upload an image of the testimonial author.',
+      'display' => array(
+        'default' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => 'testimonial_medium',
+          ),
+          'type' => 'image',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => 'content',
+            'image_style' => 'testimonial_small',
+          ),
+          'type' => 'image',
+          'weight' => 0,
+        ),
       ),
-      'type' => 'image_image',
-      'weight' => 1,
-     ),
+      'entity_type' => 'node',
+      'field_name' => 'field_testimonial_image',
+      'label' => 'Testimonial image',
+      'required' => 0,
+      'settings' => array(
+        'alt_field' => 0,
+        'default_image' => 0,
+        'file_directory' => 'images/testimonials',
+        'file_extensions' => 'png gif jpg jpeg',
+        'max_filesize' => '10MB',
+        'max_resolution' => '',
+        'min_resolution' => '',
+        'title_field' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'image',
+        'settings' => array(
+          'preview_image_style' => 'thumbnail',
+          'progress_indicator' => 'bar',
+        ),
+        'type' => 'image_image',
+        'weight' => 1,
+      ),
     ),
   );
 }
@@ -547,7 +546,7 @@ function simple_testimonials_update_7005() {
   // folder in your module, create it.
   $field_name = 'field_testimonial_image';
   $filename = 'testimonial-testimonial-image-default.jpg';
-  $source = drupal_get_path('module', 'simple_testimonials') . '/images'. '/' . $filename;
+  $source = drupal_get_path('module', 'simple_testimonials') . '/images' . '/' . $filename;
   // Replace default image for $field_name field base.
   _simple_testimonials_replace_default_image($field_name, $filename, $source);
 }
