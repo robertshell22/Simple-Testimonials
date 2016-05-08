@@ -48,7 +48,10 @@ function simple_testimonials_install() {
     );
     $file = file_copy($file, $uri, FILE_EXISTS_REPLACE);
     variable_set('testimonials_testimonial_testimonial_image_fid', $file->fid);
-
+   db_update('system')
+    ->fields(array('weight' => 999))
+    ->condition('name', 'simple_testimonials', '=')
+    ->execute();
 }
 
 /**
@@ -313,14 +316,14 @@ function _simple_testimonials_installed_instances() {
         'default' => array(
           'label' => 'hidden',
           'type' => 'text_default',
-          'weight' => '-3',
+          'weight' => '2',
           'settings' => array(),
           'module' => 'text',
         ),
         'teaser' => array(
           'label' => 'hidden',
           'type' => 'text_default',
-          'weight' => '-3',
+          'weight' => '2',
           'settings' => array(),
           'module' => 'text',
         ),
@@ -352,14 +355,14 @@ function _simple_testimonials_installed_instances() {
               'default' => array(
                   'label' => 'hidden',
                   'type' => 'text_default',
-                  'weight' => '-2',
+                  'weight' => '3',
                   'settings' => array(),
                   'module' => 'text',
               ),
               'teaser' => array(
                   'label' => 'hidden',
                   'type' => 'text_default',
-                  'weight' => '-2',
+                  'weight' => '3',
                   'settings' => array(),
                   'module' => 'text',
               ),
@@ -391,14 +394,14 @@ function _simple_testimonials_installed_instances() {
               'default' => array(
                   'label' => 'hidden',
                   'type' => 'text_default',
-                  'weight' => '-1',
+                  'weight' => '4',
                   'settings' => array(),
                   'module' => 'text',
               ),
               'teaser' => array(
                   'label' => 'hidden',
                   'type' => 'text_default',
-                  'weight' => '-1',
+                  'weight' => '4',
                   'settings' => array(),
                   'module' => 'text',
               ),
@@ -428,17 +431,17 @@ function _simple_testimonials_installed_instances() {
           ),
           'display' => array(
               'default' => array(
-                  'label' => 'above',
+                  'label' => 'hidden',
                   'module' => 'text',
                   'settings' => array(),
                   'type' => 'text_default',
-                  'weight' => 0,
+                  'weight' => 1,
               ),
               'teaser' => array(
-                  'label' => 'above',
+                  'label' => 'hidden',
                   'settings' => array(),
                   'type' => 'hidden',
-                  'weight' => 0,
+                  'weight' => 1,
               ),
           ),
           'required' => 1,
@@ -462,7 +465,7 @@ function _simple_testimonials_installed_instances() {
                     'image_style' => 'testimonial_medium',
                 ),
                 'type' => 'image',
-                'weight' => 1,
+                'weight' => 0,
             ),
             'teaser' => array(
                 'label' => 'hidden',
@@ -472,7 +475,7 @@ function _simple_testimonials_installed_instances() {
                     'image_style' => 'testimonial_small',
                 ),
                 'type' => 'image',
-                'weight' => 1,
+                'weight' => 0,
             ),
      ),
     'entity_type' => 'node',

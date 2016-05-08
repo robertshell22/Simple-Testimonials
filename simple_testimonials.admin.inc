@@ -40,7 +40,7 @@ function simple_testimonials_general_settings_form($form) {
   $form['body_filter']['testimonials_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Testimonials Description'),
-    '#default_value' => variable_get('testimonials_description', ''),
+    '#default_value' => variable_get('testimonials_description', 'Read what customers are saying about us.'),
     '#description' => t('Text that will be placed at the top of the page, above the testimonials and can serve as an introductory text.'),
     '#rows' => 5,
     '#format' => variable_get('testimonials_description_format', NULL),
