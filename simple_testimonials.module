@@ -2,7 +2,7 @@
 
 /**
  * @file
- * The Testimonials module allows users to create a Testimonials page.
+ * The Testimonials module allows users to create and display testimonials content.
  */
 
 /**
@@ -56,17 +56,20 @@ function simple_testimonials_node_access($node, $op, $account = NULL) {
  */
 function simple_testimonials_menu() {
   $items = array();
-  $testimonials_path = '/'.variable_get('testimonials_path', 'testimonials');
+  $testimonials_path = variable_get('testimonials_path', 'testimonials');
 
   $items[$testimonials_path] = array(
       'title' => variable_get('testimonials_title', 'Testimonials'),
-      'description' => variable_get('testimonials_description', ''),
+      'description' => variable_get('testimonials_description', 'See what customers are saying.'),
       'page callback' => 'views_embed_view',
       'page arguments' => array('testimonials', 'testimonials_page', 1),
       'access callback' => 'user_access',
       'access arguments' => array('access content'),
+      'menu_name' => 'main-menu',
+      'weight' => 0,
+      'plid' => 0,
       'weight' => 1,
-      'type' => MENU_SUGGESTED_ITEM,
+      'type' => MENU_NORMAL_ITEM,
   );
 
   $items['admin/config/content/simple_testimonials'] = array(
@@ -88,6 +91,7 @@ function simple_testimonials_menu() {
       'type' => MENU_DEFAULT_LOCAL_TASK,
       'weight' => -10,
   );
+  
   return $items;
 }
 
@@ -104,7 +108,7 @@ function simple_testimonials_node_info() {
       'testimonial' => array(
           'name' => t('Testimonial'),
           'base' => 'testimonial',
-          'description' => t('A testimonial for recommendation lists and blocks.'),
+          'description' => t('A testimonial with author information and photo.'),
           'has_title' => '1',
           'title_label' => t('Headline'),
       ),
@@ -150,37 +154,37 @@ function simple_testimonials_form_testimonial_node_form_alter(&$form, &$form_sta
  * Implements hook_view().
  */
 function simple_testimonials_view($node, $view_mode) {
-  drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_testimonials_flexslider.css', array('weight' => 900));
-  drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_testimonials.css', array('weight' => 999));
+  drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_testimonials_flexslider.css', array('weight' => 1));
+  drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_testimonials.css', array('weight' => 2));
 
-  $testimonial_author_name = FALSE;
+  //$testimonial_author_name = FALSE;
   // Get the author name.
-  if ($field_items = field_get_items('node', $node, 'field_testimonial_author_name')) {
-    $testimonial_author_name = reset($field_items);
-  }
+  //if ($field_items = field_get_items('node', $node, 'field_testimonial_author_name')) {
+  //  $testimonial_author_name = reset($field_items);
+ // }
 
   // Only show the author name if there is something to show.
-  if ($testimonial_author_name && !empty($testimonial_author_name['value'])) {
-    $show_author_name = FALSE;
-    if ($view_mode == 'full') {
+ // if ($testimonial_author_name && !empty($testimonial_author_name['value'])) {
+  //  $show_author_name = FALSE;
+  //  if ($view_mode == 'full') {
       // The author name is always shown on the full node.
-      $show_author_name = TRUE;
-    }
+    //  $show_author_name = TRUE;
+   // }
 
     // Should be handled by theming - create field--field_testimonial_author_name.tpl.php.
-    if ($show_author_name) {
+   // if ($show_author_name) {
       // We're here if we are showing the name.
-      $node->content['field_testimonial_author_name'] = array(
-        '#markup' => theme('field_testimonial_author_name', $testimonial_author_name),
-      );
-    }
-    else {
+     // $node->content['field_testimonial_author_name'] = array(
+      //  '#markup' => theme('field_testimonial_author_name', $testimonial_author_name),
+     // );
+   // }
+   // else {
       // We switch off the visibility of the author name.
-      hide($node->content['field_testimonial_author_name']);
-    }
-  }
+     // hide($node->content['field_testimonial_author_name']);
+   // }
+ // }
 
-  return $node;
+  //return $node;
 }
 
 /**
@@ -193,8 +197,8 @@ function simple_testimonials_views_api() {
   );
 }
 
-drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_testimonials_flexslider.css', array('group' => CSS_DEFAULT, 'weight' => 900, 'every_page' => TRUE));
-drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_testimonials.css', array('group' => CSS_DEFAULT, 'weight' => 999, 'every_page' => TRUE));
+drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_testimonials_flexslider.css', array('group' => CSS_DEFAULT, 'weight' =>1, 'every_page' => TRUE));
+drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_testimonials.css', array('group' => CSS_DEFAULT, 'weight' => 2, 'every_page' => TRUE));
 
 /**
  * Implements hook_field_default_field_instances_alter().
@@ -217,10 +221,10 @@ function simple_testimonials_field_default_field_instances_alter(&$fields)
  * @param $source
  */
 function _simple_testimonials_replace_default_image($field_name, $filename, $source) {
-  // Load field info.
+
   $field = field_info_field($field_name);
 
-  // Create new file object and get new fid.
+
   if (file_exists($source)) {
     $file = new stdClass;
     $file->filename = $filename;
@@ -241,46 +245,14 @@ function _simple_testimonials_replace_default_image($field_name, $filename, $sou
 }
 
 
-
-
 /**
  * Override Flexslider styles.
  */
 
 function simple_testimonials_css_alter(&$css) {
 
-  // Use Seven's vertical tabs style instead of the default one.
   if (isset($css[libraries_get_path('flexslider') . '/flexslider.css'])) {
     $css[libraries_get_path('flexslider') . '/flexslider.css']['data'] = drupal_get_path('modules', 'simple_testimonials') . '/css/simple_testimonials_flexslider.css';
   }
 }
-
-/**
- * Update default image on field base.
- */
-function simple_testimonials_update_8002() {
-  // $source should point to the new file. If you don't have "default_images"
-  // folder in your module, create it.
-  $field_name = 'field_testimonial_image';
-  $filename = 'testimonial-testimonial-image-default.jpg';
-  $source = drupal_get_path('module', 'simple_testimonials') . '/images'. '/' . $filename;
-  // Replace default image for $field_name field base.
-  _simple_testimonials_replace_default_image($field_name, $filename, $source);
-}
-
-/**
- * Add a menu item.
- */
-
-function simple_testimonials_update_8003() {
-  $item = array (
-    'link_title' => variable_get('testimonials_title', 'Testimonials'),
-    'link_path' => variable_get('testimonials_path', 'testimonials'),
-    'menu_name' => 'main-menu',
-    'weight' => 0,
-    'plid' => 0,
-  );
-  menu_link_save($item);
-}
-
 

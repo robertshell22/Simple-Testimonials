@@ -13,7 +13,7 @@ function simple_testimonials_views_default_views() {
 
   $view = new view();
   $view->name = 'testimonials';
-  $view->description = 'A testimonials page and blocks';
+  $view->description = 'A testimonials page, block, and slider.';
   $view->tag = 'default';
   $view->base_table = 'node';
   $view->human_name = 'Testimonials';
@@ -129,7 +129,6 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['empty'] = TRUE;
   $handler->display->display_options['header']['area']['content'] = '<h2 class="title block-title">Recent [variable]</h2>';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = TRUE;
@@ -181,7 +180,6 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['title']['alter']['text'] = '<a href="/[variable_2]">[title]</a>';
-  $handler->display->display_options['fields']['title']['element_type'] = 'h2';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
   /* Field: Content: Testimonial */
@@ -189,6 +187,8 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['fields']['field_testimonial_text']['table'] = 'field_data_field_testimonial_text';
   $handler->display->display_options['fields']['field_testimonial_text']['field'] = 'field_testimonial_text';
   $handler->display->display_options['fields']['field_testimonial_text']['label'] = '';
+  $handler->display->display_options['fields']['field_testimonial_text']['alter']['max_length'] = '150';
+  $handler->display->display_options['fields']['field_testimonial_text']['alter']['trim'] = TRUE;
   $handler->display->display_options['fields']['field_testimonial_text']['element_type'] = 'p';
   $handler->display->display_options['fields']['field_testimonial_text']['element_label_colon'] = FALSE;
   /* Field: Content: Author name */
@@ -217,7 +217,7 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['fields']['field_testimonial_author_role']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['field_testimonial_author_role']['alter']['text'] = '<strong>[field_testimonial_author_role]</strong> [field_testimonial_author_company]';
   $handler->display->display_options['fields']['field_testimonial_author_role']['element_label_colon'] = FALSE;
-  $handler->display->display_options['block_description'] = 'Recent Testimonials';
+  $handler->display->display_options['block_description'] = 'Block: Recent Testimonials';
 
   /* Display: Block - Random Testimonials */
   $handler = $view->new_display('block', 'Block - Random Testimonials', 'testimonials_random');
@@ -240,11 +240,19 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['empty'] = TRUE;
   $handler->display->display_options['header']['area']['content'] = '<h2 class="title block-title">[variable]</h2>';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = TRUE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Global: System variable */
+  $handler->display->display_options['fields']['variable_1']['id'] = 'variable_1';
+  $handler->display->display_options['fields']['variable_1']['table'] = 'views';
+  $handler->display->display_options['fields']['variable_1']['field'] = 'variable';
+  $handler->display->display_options['fields']['variable_1']['label'] = '';
+  $handler->display->display_options['fields']['variable_1']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['variable_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['variable_1']['empty'] = 'testimonials';
+  $handler->display->display_options['fields']['variable_1']['variable_name'] = 'testimonials_path';
   /* Field: Content: Path */
   $handler->display->display_options['fields']['path']['id'] = 'path';
   $handler->display->display_options['fields']['path']['table'] = 'node';
@@ -263,8 +271,11 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['title']['alter']['text'] = '<a href="/[variable_1]">[title]</a>';
   $handler->display->display_options['fields']['title']['element_type'] = 'h2';
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
   /* Field: Content: Testimonial */
   $handler->display->display_options['fields']['field_testimonial_text']['id'] = 'field_testimonial_text';
   $handler->display->display_options['fields']['field_testimonial_text']['table'] = 'field_data_field_testimonial_text';
@@ -280,7 +291,7 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['fields']['field_testimonial_author_name']['field'] = 'field_testimonial_author_name';
   $handler->display->display_options['fields']['field_testimonial_author_name']['label'] = '';
   $handler->display->display_options['fields']['field_testimonial_author_name']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['field_testimonial_author_name']['alter']['text'] = '<a href="[path]">[field_testimonial_author_name]</a>';
+  $handler->display->display_options['fields']['field_testimonial_author_name']['alter']['text'] = '<a href="/[variable_1]">[field_testimonial_author_name]</a>';
   $handler->display->display_options['fields']['field_testimonial_author_name']['element_label_colon'] = FALSE;
   /* Field: Content: Author Role */
   $handler->display->display_options['fields']['field_testimonial_author_role']['id'] = 'field_testimonial_author_role';
@@ -328,9 +339,8 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['empty'] = TRUE;
   $handler->display->display_options['header']['area']['content'] = '[variable_1]
-<hr>';
+  <hr>';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = TRUE;
   $handler->display->display_options['defaults']['empty'] = FALSE;
@@ -339,8 +349,9 @@ function simple_testimonials_views_default_views() {
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = 'There are currently no testimonials.';
-  $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+  $handler->display->display_options['empty']['area']['content'] = 'There is currently no content to display.';
+  $handler->display->display_options['empty']['area']['format'] = 'full_html';
+  $handler->display->display_options['empty']['area']['tokenize'] = TRUE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: Content: Path */
   $handler->display->display_options['fields']['path']['id'] = 'path';

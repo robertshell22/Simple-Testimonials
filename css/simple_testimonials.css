@@ -30,12 +30,14 @@
 
 @media (max-width: 450px) {
     .node-testimonial  {
-        margin: 0 auto;
-        width: 450px;
+        margin: 0 auto 20px auto;
+        padding-bottom: 20px;
+        width: 320px;
+        border-bottom: 1px solid #ccc;
     }
 
     .content {
-        max-width: 400px;
+        max-width: 320px;
     }
 }
 
@@ -98,9 +100,10 @@
     font-style: italic;
     overflow: hidden;
     padding-top: 2.5em;
-    font-size: 1.05em;
-    line-height: 1.4em;
+    font-size: 1.1em;
+    line-height: 1.5em;
     margin-bottom: 18px;
+    opacity: 0.8;
 }
 
 @media (min-width: 600px) {
@@ -211,6 +214,11 @@
     font-size: 1.2em;
 }
 
+.testimonials-page .view-empty p {
+    margin: 40px 0 40px 0;
+    font-size: 1.2em;
+}
+
 .testimonials-page .views-row:last-child {
 
     border-bottom: 0px solid #ccc;
@@ -293,7 +301,7 @@
     font-style: normal;
     overflow: hidden;
     font-size: 1em;
-    line-height: 1.2em;
+    line-height: 1.3em;
 }
 
 @media (max-width: 650px) {
@@ -446,11 +454,13 @@
  */
 
 .testimonials-recent {
-    margin: 0 3em 3em 0;
+    margin: 0 2em 3em 0;
     background: #fff none repeat scroll 0 0;
     box-sizing: border-box;
-    margin: 0 3em 3em 0;
+
 }
+
+
 @media (max-width: 650px) {
     .testimonials-recent {
         padding: 0 10px;
@@ -466,7 +476,7 @@
 }
 
 .testimonials-recent .view-header {
-    margin: 2em 2em 3em 2em;
+    margin: 2em 0 3em 0;
 }
 
 @media (max-width: 650px) {
@@ -536,16 +546,14 @@
     }
 }
 
-
-
-.testimonials-recent .views-field-title h2{
+.testimonials-recent .views-field-title {
     margin:0.5em 0 0 0;
-
-    line-height: 1.3em;
+    font-size: 1.5em;
+    line-height: 1.2;
 }
 
 @media (max-width: 650px) {
-    .testimonials-recent .views-field-title h2{
+    .testimonials-recent .views-field-title {
         margin:1em 0 0 0;
         text-align: center;
     }
@@ -554,8 +562,8 @@
     font-style: italic;
     overflow: hidden;
     padding-top: 19px;
-    font-size: 1.15em;
-    line-height: 1.4em;
+    font-size: 1.1em;
+    line-height: 1.3em;
     opacity: 0.8;
 }
 
@@ -640,7 +648,7 @@
 }
 
      #testimonials-recent-slider ul {
-
+         list-style-type:none;
         margin: 0.25em 0 0.25em 0;
     }
 
@@ -685,7 +693,7 @@ html[xmlns] .slides {
 .flexslider {
     margin: 0 0 60px;
     background: #fff;
-    border: 0px solid #fff;
+    border: 1px solid #fff;
     position: relative;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -696,6 +704,27 @@ html[xmlns] .slides {
     -o-box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
     box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
     zoom: 1;
+}
+
+.flexslider::after {
+    z-index: -1;
+    position: absolute;
+    content: "";
+    bottom: 15px;
+    right: 10px;
+    left: auto;
+    width: 50%;
+    top: 80%;
+    max-width:300px;
+    background: #777;
+    -webkit-box-shadow: 0 15px 10px #777;
+    -moz-box-shadow: 0 15px 10px #777;
+    box-shadow: 0 15px 10px #777;
+    -webkit-transform: rotate(3deg);
+    -moz-transform: rotate(3deg);
+    -o-transform: rotate(3deg);
+    -ms-transform: rotate(3deg);
+    transform: rotate(3deg);
 }
 
 .flex-viewport {
@@ -1017,77 +1046,3 @@ html[xmlns] .slides {
     right: 0;
     z-index: 99;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
-
-
-
-
-
-.testimonials-top-link {
-  font-size: 0.8em;
-  margin-top:0;
-  margin-bottom: 0;
-  padding-bottom: 1.0em;
-}
-
-.testimonials-question {
-  padding-top: 5px;
-  padding-left: 20px;
-}
-
-.testimonials-answer {
-  padding-left: 40px;
-}
-
-.testimonials-answer .testimonials-answer-label {
-  float: left;
-  margin-right: 0.5em;
-}
-
-.testimonials-dl-hide-answer {
-  padding-bottom: 15px;
-}
-
-img.testimonials-tax-image {
-  float: left;
-  padding: 0px 3px 0px 3px;
-}
-
-div.testimonials-detailed-question {
-  font-style: italic;
-}
-
-.testimonials .collapsible {
-	display: block;
-}
-
-.testimonials .collapsed {
-	display: none;
-}
-
-.testimonials #testimonials-expand-all {
-  text-align: right;
-  display: none;
-}
-.testimonials #testimonials-expand-all a.testimonials-expand-all-link,
-.testimonials #testimonials-expand-all a.testimonials-collapse-all-link {
-  display: none;
-}
-**/

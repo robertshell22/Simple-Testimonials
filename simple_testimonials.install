@@ -11,6 +11,7 @@
  * Inserts the Testimonials module's schema in the SQL database.
  */
 function simple_testimonials_install() {
+  
   variable_set('node_type_testimonial', array('status'));
   $t = get_t();
 
@@ -20,7 +21,7 @@ function simple_testimonials_install() {
         'type' => 'testimonial',
         'name' => st('Testimonial'),
         'base' => 'node_content',
-        'description' => st("A testimonial for recommendation lists and blocks."),
+        'description' => st("Testimonial content with author information and photo."),
         'custom' => 1,
         'modified' => 1,
         'locked' => 0,
@@ -31,6 +32,7 @@ function simple_testimonials_install() {
     node_type_save($type);
 
   }
+  
 
   _simple_testimonials_add_custom_fields();
 
@@ -48,11 +50,23 @@ function simple_testimonials_install() {
     );
     $file = file_copy($file, $uri, FILE_EXISTS_REPLACE);
     variable_set('testimonials_testimonial_testimonial_image_fid', $file->fid);
-   db_update('system')
+
+    variable_set('testimonials_path_old', 'testimonials');
+    variable_set('testimonials_title', 'Testimonials');
+
+    db_update('system')
     ->fields(array('weight' => 999))
     ->condition('name', 'simple_testimonials', '=')
     ->execute();
+    
+    $module = 'simple_testimonials';
+    $update = 'UPDATE system SET schema_version = 7000 WHERE name = :module';
+    db_query($update, array(':module' => $module));
+
+    simple_testimonials_update_7005();
 }
+
+
 
 /**
  * Implements hook_uninstall().
@@ -66,7 +80,7 @@ function simple_testimonials_uninstall() {
     variable_del('testimonials_title');
     variable_del('testimonials_description');
     variable_del('testimonials_path');
-    variable_del('testimonials_custom_breadcrumb');
+    variable_del('testimonials_path_old');
     variable_del('testimonials_testimonial_testimonial_image_fid');
   
   // Remove content type and the fields created.
@@ -82,6 +96,13 @@ function simple_testimonials_uninstall() {
   node_type_delete($testimonial_type);
   field_purge_batch(500);
 
+  $path = variable_get('testimonials_path', 'testimonials');
+  menu_link_delete($path);
+  redirect_delete_by_path($path);
+
+  $module = 'simple_testimonials';
+  $clear = 'UPDATE system SET schema_version = 7000 WHERE name = :module';
+  db_query($clear, array(':module' => $module));
 
   // Clear the cache tables.
   cache_clear_all('*', 'cache', TRUE);
@@ -92,10 +113,8 @@ function simple_testimonials_uninstall() {
 
 
 /**
- * Code examples modified.
+ * Add custom fields.
  *
- * @see http://www.sitepoint.com/creating-a-new-drupal-node-type/
- * @see http://www.thecarneyeffect.co.uk/creating-custom-content-type-adding-fields-programmatically-drupal-7
  */
 function _simple_testimonials_add_custom_fields() {
   foreach (_simple_testimonials_installed_fields() as $field) {
@@ -368,7 +387,7 @@ function _simple_testimonials_installed_instances() {
               ),
           ),
           'required' => 0,
-          'description' => '(Client, Project Manager, etc...)',
+          'description' => '(Customer, Project Manager, etc...)',
           'default_value' => NULL,
           'field_name' => 'field_testimonial_author_role',
           'entity_type' => 'node',
@@ -445,7 +464,7 @@ function _simple_testimonials_installed_instances() {
               ),
           ),
           'required' => 1,
-          'description' => 'Enter a testimonial, up to 800 characters in length.',
+          'description' => 'Enter a testimonial, up to 800 characters in length. Do not include quotation marks.',
           'default_value' => NULL,
           'field_name' => 'field_testimonial_text',
           'entity_type' => 'node',
@@ -520,3 +539,15 @@ function _simple_testimonials_delete_custom_fields() {
   }
 }
 
+/**
+ * Update default image on field base.
+ */
+function simple_testimonials_update_7005() {
+  // $source should point to the new file. If you don't have "default_images"
+  // folder in your module, create it.
+  $field_name = 'field_testimonial_image';
+  $filename = 'testimonial-testimonial-image-default.jpg';
+  $source = drupal_get_path('module', 'simple_testimonials') . '/images'. '/' . $filename;
+  // Replace default image for $field_name field base.
+  _simple_testimonials_replace_default_image($field_name, $filename, $source);
+}

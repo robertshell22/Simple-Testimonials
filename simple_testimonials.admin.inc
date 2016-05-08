@@ -30,6 +30,7 @@ function simple_testimonials_settings_page($op = NULL) {
  *   converted to HTML.
  */
 function simple_testimonials_general_settings_form($form) {
+  
   $form['testimonials_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
@@ -40,12 +41,17 @@ function simple_testimonials_general_settings_form($form) {
   $form['body_filter']['testimonials_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Testimonials Description'),
-    '#default_value' => variable_get('testimonials_description', 'Read what customers are saying about us.'),
+    '#default_value' => variable_get('testimonials_description', 'See what customers are saying about us.'),
     '#description' => t('Text that will be placed at the top of the page, above the testimonials and can serve as an introductory text.'),
     '#rows' => 5,
     '#format' => variable_get('testimonials_description_format', NULL),
   );
 
+  $form['testimonials_path_old'] = array(
+    '#type' => 'hidden',
+    '#value' => variable_get('testimonials_path', 'testimonials'),
+  );
+  
   $form['testimonials_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Testimonials Path'),
@@ -53,7 +59,9 @@ function simple_testimonials_general_settings_form($form) {
     '#default_value' => variable_get('testimonials_path', 'testimonials'),
   );
 
-  return system_settings_form($form);
+  $form = system_settings_form($form);
+  $form['#submit'][] = 'simple_testimonials_general_settings_form_submit';
+  return $form;
 }
 
 /**
@@ -73,5 +81,24 @@ function simple_testimonials_general_settings_form_validate($form, &$form_state)
  * Rebuilds the menu to account for adjustments to the testimonials_path variable.
  */
 function simple_testimonials_general_settings_form_submit($form, &$form_state) {
-  menu_rebuild();
+
+$oldpath = variable_get('testimonials_path_old', 'testimonials');
+$newpath = variable_get('testimonials_path', 'testimonials');
+
+$redirect = new stdClass();
+        redirect_object_prepare(
+          $redirect,
+          array(
+            'source' => $oldpath,
+            'source_options' => array(),
+            'redirect' => $newpath,
+            'redirect_options' => array(),
+            'language' => LANGUAGE_NONE,
+          )
+        );
+        redirect_save($redirect);
+        variable_set('testimonials_path_old', $newpath);
+        menu_rebuild();
 }
+
+

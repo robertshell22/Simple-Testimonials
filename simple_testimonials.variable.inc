@@ -2,7 +2,7 @@
 
 /**
  * @file
- * testimonials module variables file.
+ * Testimonials module variables file.
  */
 
 /**
@@ -27,6 +27,13 @@ function simple_testimonials_variable_info($options) {
   $variable['testimonials_path'] = array(
     'title' => t('Testimonials path', array(), $options),
     'description' => t('Testimonials path', array(), $options),
+    'type' => 'string',
+    'access' => 'administer testimonials',
+  );
+  
+  $variable['testimonials_path_old'] = array(
+    'title' => t('Testimonials path old', array(), $options),
+    'description' => t('Testimonials path old', array(), $options),
     'type' => 'string',
     'access' => 'administer testimonials',
   );
