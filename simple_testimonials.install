@@ -33,11 +33,10 @@ function simple_testimonials_install() {
 
   }
 
-
   _simple_testimonials_add_custom_fields();
 
   // Create the testimonial.testimonial_image field's default file reference.
-  $filename = 'testimonial-testimonial-image-default.jpg';
+  $filename = 'simple-testimonials-default.jpg';
   $origfile = drupal_get_path('module', 'simple_testimonials') . '/images/' . $filename;
   $uri = 'public://' . $filename;
   $file = (object) array(
@@ -49,10 +48,11 @@ function simple_testimonials_install() {
     'status' => FILE_STATUS_PERMANENT,
   );
   $file = file_copy($file, $uri, FILE_EXISTS_REPLACE);
-  variable_set('testimonials_testimonial_testimonial_image_fid', $file->fid);
+  variable_set('simple_testimonials_default_image_fid', $file->fid);
 
-  variable_set('testimonials_path_old', 'testimonials');
-  variable_set('testimonials_title', 'Testimonials');
+  variable_set('simple_testimonials_path_old', 'testimonials');
+  variable_set('simple_testimonials_title', 'Testimonials');
+
 
   db_update('system')
     ->fields(array('weight' => 999))
@@ -74,13 +74,21 @@ function simple_testimonials_install() {
  */
 function simple_testimonials_uninstall() {
 
+  $fid = variable_get('simple_testimonials_default_image_fid', FALSE);
+  if ($fid) {
+    $file = file_load($fid);
+    file_delete($file, TRUE);
+    variable_del('simple_testimonials_default_image_fid');
+  }
+
   // Delete the variables we created.
   // General settings.
-  variable_del('testimonials_title');
-  variable_del('testimonials_description');
-  variable_del('testimonials_path');
-  variable_del('testimonials_path_old');
-  variable_del('testimonials_testimonial_testimonial_image_fid');
+  variable_del('node_type_testimonial');
+  variable_del('simple_testimonials_title');
+  variable_del('simple_testimonials_description');
+  variable_del('simple_testimonials_path');
+  variable_del('simple_testimonials_path_old');
+  variable_del('simple_testimonials_default_image_fid');
 
   // Remove content type and the fields created.
   $testimonial_type = 'testimonial';
@@ -95,7 +103,7 @@ function simple_testimonials_uninstall() {
   node_type_delete($testimonial_type);
   field_purge_batch(500);
 
-  $path = variable_get('testimonials_path', 'testimonials');
+  $path = variable_get('simple_testimonials_path', 'testimonials');
   menu_link_delete($path);
   redirect_delete_by_path($path);
 
@@ -109,7 +117,6 @@ function simple_testimonials_uninstall() {
   cache_clear_all('*', 'cache_menu', TRUE);
   cache_clear_all('*', 'cache_page', TRUE);
 }
-
 
 /**
  * Add custom fields.
@@ -346,7 +353,7 @@ function _simple_testimonials_installed_instances() {
           'module' => 'text',
         ),
       ),
-      'required' => 1,
+      'required' => 0,
       'description' => '(John Smith, John S., etc...)',
       'default_value' => NULL,
       'field_name' => 'field_testimonial_author_name',
@@ -462,7 +469,7 @@ function _simple_testimonials_installed_instances() {
           'weight' => 1,
         ),
       ),
-      'required' => 1,
+      'required' => 0,
       'description' => 'Enter a testimonial, up to 800 characters in length. Do not include quotation marks.',
       'default_value' => NULL,
       'field_name' => 'field_testimonial_text',
@@ -545,8 +552,9 @@ function simple_testimonials_update_7005() {
   // $source should point to the new file. If you don't have "default_images"
   // folder in your module, create it.
   $field_name = 'field_testimonial_image';
-  $filename = 'testimonial-testimonial-image-default.jpg';
+  $filename = 'simple-testimonials-default.jpg';
   $source = drupal_get_path('module', 'simple_testimonials') . '/images' . '/' . $filename;
+
   // Replace default image for $field_name field base.
   _simple_testimonials_replace_default_image($field_name, $filename, $source);
 }

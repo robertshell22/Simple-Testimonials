@@ -1,28 +1,46 @@
 <?php
+// $Id$
 
 /**
  * @file
- * The Testimonials module allows users to create and display testimonials content.
- */
-
-/**
- * @file
- * Code for the Testimonials feature.
+ * A module that adds simple testimonial functionality.
+ *
+ * This module adds a testimonial content type, a
+ * configurable testimonials page, a random block,
+ * and a slider blocks.
  */
 
 include_once 'simple_testimonials.features.inc';
 
 /**
+ * Implements hook_help().
+ */
+function simple_testimonials_help($path, $arg) {
+  if ($path == 'admin/help#simple_testimonials') {
+    return t('This modules creates a testimonial content type, a testimonials list page, a
+random testimonial block, and a slider block that rotates through five testimonials.<p>
+
+The display name, page description, and url alias of the testimonials section and block titles
+are configurable in a settings page.<p><p>');
+  }
+}
+
+/**
  * Implements hook_permission().
+ *
+ * Since the access to our new custom pages will be granted based on
+ * special permissions, we need to define what those permissions are here.
+ * This ensures that they are available to enable on the user role
+ * administration pages.
  */
 function simple_testimonials_permission() {
   return array(
     'administer testimonials' => array(
-      'title' => t('Administer Testimonials module'),
+      'title' => t('Administer Simple Testimonials module'),
+      'description' => t('Allow admins to administer the Simple Testimonials module.'),
     ),
   );
 }
-
 
 /**
  * Implements hook_node_access().
@@ -44,7 +62,7 @@ function simple_testimonials_node_access($node, $op, $account = NULL) {
     return NODE_ACCESS_IGNORE;
   }
   elseif ($op == 'create' || $op == 'update' || $op == 'delete') {
-    if (user_access('administer testimonials')) {
+    if (user_access('create content')) {
       return NODE_ACCESS_ALLOW;
     }
   }
@@ -56,11 +74,11 @@ function simple_testimonials_node_access($node, $op, $account = NULL) {
  */
 function simple_testimonials_menu() {
   $items = array();
-  $testimonials_path = variable_get('testimonials_path', 'testimonials');
+  $testimonials_path = variable_get('simple_testimonials_path', 'testimonials');
 
   $items[$testimonials_path] = array(
-    'title' => variable_get('testimonials_title', 'Testimonials'),
-    'description' => variable_get('testimonials_description', 'See what customers are saying.'),
+    'title' => variable_get('simple_testimonials_title', 'Testimonials'),
+    'description' => variable_get('simple_testimonials_description', 'See what customers are saying.'),
     'page callback' => 'views_embed_view',
     'page arguments' => array('testimonials', 'testimonials_page', 1),
     'access callback' => 'user_access',
@@ -95,6 +113,42 @@ function simple_testimonials_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_modules_enabled().
+ *
+ * Intercepts the node/content type creation settings.
+ */
+
+function simple_testimonials_modules_enabled($modules) {
+
+  foreach($modules as $module) {
+    $node_info_array = module_invoke($module, 'node_info');
+    // If module implements hook_node_info
+    if (!empty($node_info_array)) {
+      foreach($node_info_array as $type => $node_info) {
+
+        $node_info['type'] = $type;
+
+        simple_testimonials_set_node_display_settings($node_info);
+
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_set_node_display_settings().
+ *
+ * Adds display settings to the node_info array.
+ */
+
+function simple_testimonials_set_node_display_settings($node_info) {
+
+  if (isset($node_info['node-submitted'])) {
+    variable_set("node_submitted_{$node_info['type']}", $node_info['node-submitted']);
+  }
+}
+
 
 /**
  * Implements hook_node_info().
@@ -111,9 +165,12 @@ function simple_testimonials_node_info() {
       'description' => t('A testimonial with author information and photo.'),
       'has_title' => '1',
       'title_label' => t('Headline'),
+      'node-submitted' => 0,
     ),
   );
 }
+
+
 
 /**
  * Implements hook_form().
@@ -142,6 +199,10 @@ function simple_testimonials_form($node, $form_state) {
 
   return $form;
 }
+
+/**
+ * Implements hook_form_alter().
+ */
 
 function simple_testimonials_form_testimonial_node_form_alter(&$form, &$form_state, $form_id) {
   // Modification for the form with the given form ID goes here. For example, if
@@ -180,6 +241,7 @@ drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_t
   'every_page' => TRUE
 ));
 
+
 /**
  * Implements hook_field_default_field_instances_alter().
  *
@@ -188,41 +250,51 @@ drupal_add_css(drupal_get_path('module', 'simple_testimonials') . '/css/simple_t
 function simple_testimonials_field_default_field_instances_alter(&$fields) {
   if (isset($fields['node-testimonial-field_testimonial_image']['settings']['default_image'])) {
     $fid = $fields['node-testimonial-field_testimonial_image']['settings']['default_image'];
-    $fields['node-testimonial-field_testimonial_image']['settings']['default_image'] = variable_get('testimonials_testimonial_testimonial_image_fid', $fid);
+    $fields['node-testimonial-field_testimonial_image']['settings']['default_image'] = variable_get('simple_testimonials_default_image_fid', $fid);
   }
 }
 
 /**
- * Helper to replace default field base image.
+ * Callback to replace the default image.
  *
- * @param $field_name
- * @param $filename
- * @param $source
+ * Replace the default image.
  */
+
 function _simple_testimonials_replace_default_image($field_name, $filename, $source) {
 
-  $field = field_info_field($field_name);
+  // Create the default images folder.
 
+  $new_folder = 'public://default_images/';
+  file_prepare_directory($new_folder, FILE_CREATE_DIRECTORY);
+
+
+  $field_name = 'field_testimonial_image';
+  $filename = 'simple-testimonials-default.jpg';
+  $source = drupal_get_path('module', 'simple_testimonials') . '/images/' . $filename;
+  $field = field_info_field($field_name);
+  $uri = 'public://' . $filename;
+
+   // Create the file object.
 
   if (file_exists($source)) {
     $file = new stdClass;
     $file->filename = $filename;
     $file->timestamp = REQUEST_TIME;
-    $file->uri = $source;
-    $file->filemime = file_get_mimetype($source);
+    $file->uri = $uri;
+    $file->filemime = 'image/jpg';
+    $file->filesize = filesize($origfile);
     $file->uid = 1;
     $file->status = 1;
-    $file = file_copy($file, 'public://default_images', FILE_EXISTS_REPLACE);
-    $fid = $file->fid;
+    $file = file_copy($file, $uri, FILE_EXISTS_REPLACE);
+    variable_set('simple_testimonials_default_image_fid', $file->fid);
 
     // Replace old fid with new fid.
-    $field['settings']['default_image'] = (string) $fid;
+    $field['settings']['default_image'] = variable_get('simple_testimonials_default_image_fid', $fid);
 
     // Update field.
     field_update_field($field);
   }
 }
-
 
 /**
  * Override Flexslider styles.
@@ -234,4 +306,3 @@ function simple_testimonials_css_alter(&$css) {
     $css[libraries_get_path('flexslider') . '/flexslider.css']['data'] = drupal_get_path('modules', 'simple_testimonials') . '/css/simple_testimonials_flexslider.css';
   }
 }
-

@@ -31,32 +31,32 @@ function simple_testimonials_settings_page($op = NULL) {
  */
 function simple_testimonials_general_settings_form($form) {
 
-  $form['testimonials_title'] = array(
+  $form['simple_testimonials_title'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
-    '#default_value' => variable_get('testimonials_title', 'Testimonials'),
+    '#default_value' => variable_get('simple_testimonials_title', 'Testimonials'),
     '#description' => t('Testimonials, Recommendations, What People Are Saying, etc...'),
   );
 
-  $form['body_filter']['testimonials_description'] = array(
+  $form['body_filter']['simple_testimonials_description'] = array(
     '#type' => 'textarea',
     '#title' => t('Testimonials Description'),
-    '#default_value' => variable_get('testimonials_description', 'See what customers are saying about us.'),
+    '#default_value' => variable_get('simple_testimonials_description', 'See what customers are saying about us.'),
     '#description' => t('Text that will be placed at the top of the page, above the testimonials and can serve as an introductory text.'),
     '#rows' => 5,
-    '#format' => variable_get('testimonials_description_format', NULL),
+   // '#format' => variable_get('simple_testimonials_description_format', NULL),
   );
 
-  $form['testimonials_path_old'] = array(
+  $form['simple_testimonials_path_old'] = array(
     '#type' => 'hidden',
-    '#value' => variable_get('testimonials_path', 'testimonials'),
+    '#value' => variable_get('simple_testimonials_path', 'testimonials'),
   );
 
-  $form['testimonials_path'] = array(
+  $form['simple_testimonials_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Testimonials Path'),
     '#description' => t('This option sets the path to the testimonials page. DO NOT append with a \'/\''),
-    '#default_value' => variable_get('testimonials_path', 'testimonials'),
+    '#default_value' => variable_get('simple_testimonials_path', 'testimonials'),
   );
 
   $form = system_settings_form($form);
@@ -68,12 +68,12 @@ function simple_testimonials_general_settings_form($form) {
  * Validate for general settings form.
  */
 function simple_testimonials_general_settings_form_validate($form, &$form_state) {
-  $path = $form_state['values']['testimonials_path'];
+  $path = $form_state['values']['simple_testimonials_path'];
 
   // Check if there is no special characters and trailing slash.
   $pattern = "/[\w-\/]+(?<!\/)$/";
   if (!preg_match($pattern, $path)) {
-    form_set_error('testimonials_path', t('Testimonials path is not correct.'));
+    form_set_error('simple_testimonials_path', t('Testimonials path is not correct.'));
   }
 }
 
@@ -82,8 +82,8 @@ function simple_testimonials_general_settings_form_validate($form, &$form_state)
  */
 function simple_testimonials_general_settings_form_submit($form, &$form_state) {
 
-  $oldpath = variable_get('testimonials_path_old', 'testimonials');
-  $newpath = variable_get('testimonials_path', 'testimonials');
+  $oldpath = variable_get('simple_testimonials_path_old', 'testimonials');
+  $newpath = variable_get('simple_testimonials_path', 'testimonials');
 
   $redirect = new stdClass();
   redirect_object_prepare(
@@ -97,7 +97,7 @@ function simple_testimonials_general_settings_form_submit($form, &$form_state) {
     )
   );
   redirect_save($redirect);
-  variable_set('testimonials_path_old', $newpath);
+  variable_set('simple_testimonials_path_old', $newpath);
   menu_rebuild();
 }
 

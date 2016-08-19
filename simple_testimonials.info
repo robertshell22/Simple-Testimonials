@@ -1,8 +1,12 @@
+;$Id$
+
 name = Simple Testimonials
 description = "Adds a testimonial content type, a configurable testimonials page, a random block, and a slider blocks."
 core = 7.x
 package = Other
 
+dependencies[] = ctools
+dependencies[] = libraries
 dependencies[] = image
 dependencies[] = views
 dependencies[] = views_slideshow
@@ -10,11 +14,17 @@ dependencies[] = flexslider
 dependencies[] = features
 dependencies[] = vvf
 dependencies[] = imagecache_actions
+dependencies[] = imagecache_canvasactions
+dependencies[] = flexslider_views
 dependencies[] = redirect
 dependencies[] = token
 
 files[] = simple_testimonials.admin.inc
+files[] = simple_testimonials.features.inc
 files[] = simple_testimonials.install
 files[] = simple_testimonials.module
+files[] = simple_testimonials.variable.inc
+files[] = simple_testimonials.test
+
 configure = admin/config/content/simple_testimonials/general
 

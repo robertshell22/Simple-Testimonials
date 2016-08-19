@@ -10,28 +10,28 @@
  */
 function simple_testimonials_variable_info($options) {
 
-  $variable['testimonials_title'] = array(
+  $variable['simple_testimonials_title'] = array(
     'title' => t('Testimonials page title', array(), $options),
     'description' => t('Testimonials page title', array(), $options),
     'type' => 'string',
     'access' => 'administer testimonials',
   );
 
-  $variable['testimonials_description'] = array(
+  $variable['simple_testimonials_description'] = array(
     'title' => t('Testimonials page description', array(), $options),
     'description' => t('Testimonials page description', array(), $options),
     'type' => 'string',
     'access' => 'administer testimonials',
   );
 
-  $variable['testimonials_path'] = array(
+  $variable['simple_testimonials_path'] = array(
     'title' => t('Testimonials path', array(), $options),
     'description' => t('Testimonials path', array(), $options),
     'type' => 'string',
     'access' => 'administer testimonials',
   );
-  
-  $variable['testimonials_path_old'] = array(
+
+  $variable['simple_testimonials_path_old'] = array(
     'title' => t('Testimonials path old', array(), $options),
     'description' => t('Testimonials path old', array(), $options),
     'type' => 'string',
